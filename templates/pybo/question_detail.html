@@ -1,0 +1,9 @@
+{% if question %}
+  <h1>{{ question.subject }}</h1>
+    
+  <div>
+      {{ question.content }}
+  </div>
+  {% else %}
+  <p>Invalid ID</p>
+{% endif %}
