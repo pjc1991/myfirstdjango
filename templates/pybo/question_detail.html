@@ -1,9 +1,28 @@
+{% load static %}
+<link rel="stylesheet" type="text/css" href="{% static 'style.css' %}">
+
 {% if question %}
   <h1>{{ question.subject }}</h1>
     
   <div>
       {{ question.content }}
   </div>
+  <div>
+  <h5>{{ question.answer__set.count }} 개의 답변이 있습니다. </h5>
+  <ul>
+  {% for answer in answer_list %}
+    <li>
+        {{ answer.content }}
+    </li>
+  {% endfor %}
+  </ul>
+  <form action="{% url 'pybo:answer_create' question.id %}" method="post">
+    {% csrf_token %}
+    <textarea name="content" id="content" rows="15"></textarea>
+    <input type="submit" value="답변 등록">
+  </form>
+
+
   {% else %}
   <p>Invalid ID</p>
 {% endif %}
