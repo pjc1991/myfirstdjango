@@ -1,3 +1,6 @@
+{% extends 'base.html' %}
+{% block content %}
+
 {% if question_list %}
     <ul>
     {% for question in question_list %}
@@ -9,3 +12,7 @@
     {% else %}
     <p>there is no question.</p>
 {% endif %}
+    <a href="{% url 'pybo:question_create' %}" class="btn btn-primary">질문 등록하기 </a>
+
+{% endblock %}
+  

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h5>질문 등록</h5>
+<form action="" class="post-form my-3" method="post">
+{% csrf_token %}
+{{ form.as_p }}
+<button type="submit" class="btn btn-primary">저장하기</button>
+</form>
+<button class="btn btn-primary" onclick="location.href='{% url 'pybo:index' %}'">돌아가기</button>
+{% endblock %}
