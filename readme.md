@@ -3,8 +3,11 @@
 장고를 이용한 간단한 웹 어플리케이션 구현.
 간단한 CMS 구현을 목표로 한다.
 
-목표 구현 기능 : 게시판, 컨텐츠 업로드, 관리 기능
+## 프로젝트 시동
 
-참고 내용 : 점프 투 장고 (박응용)
-
-4년 전 처음 파이썬을 배우던 시절 추억 그대로, 같은 사람에게 다시 배울 수 있어서 너무 즐겁다. 
+```{python}  
+source ./venv/bin/activate
+python manage.py runserver
+control + c
+deactivate
+```
