@@ -1,10 +1,11 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse
-from pybo.models import Question
+from pybo.models import Question, board
 from django.utils import timezone
 from .forms import QuestionForm
 
 # Create your views here.
+
 
 def index(request):
     """
@@ -12,8 +13,9 @@ def index(request):
     """
 
     question_list = Question.objects.order_by('-create_date')
-    context = { 'question_list' : question_list}
+    context = {'question_list': question_list}
     return render(request, 'pybo/question_list.html', context)
+
 
 def detail(request, question_id):
     """
@@ -22,7 +24,7 @@ def detail(request, question_id):
 
     q = get_object_or_404(Question, pk=question_id)
     answer_list = q.answer_set.all()
-    context = { 'question': q , 'answer_list' : answer_list}
+    context = {'question': q, 'answer_list': answer_list}
     return render(request, 'pybo/question_detail.html', context)
 
 
@@ -37,16 +39,40 @@ def question_create(request):
             question.create_date = timezone.now()
             question.save()
             return redirect('pybo:index')
-    else :
+    else:
         form = QuestionForm()
-        context = {'form' : form}
+        context = {'form': form}
         return render(request, 'pybo/question_form.html', context)
+
 
 def answer_create(request, question_id):
     """
     pybo 답변 등록
     """
+    
     question = get_object_or_404(Question, pk=question_id)
-    question.answer_set.create(content=request.POST.get('content'), create_date=timezone.now())
+    question.answer_set.create(content=request.POST.get(
+        'content'), create_date=timezone.now())
 
     return redirect('pybo:detail', question_id=question_id)
+
+
+def board_list(request):
+    """
+    pybo 게시판 목록 출력
+    """
+
+    board_list = board.objects.order_by('-create_date')
+    context = {'board_list': board_list}
+    return render(request, 'pybo/board_list.html', context)
+
+
+def board_detail(request, board_id):
+    """
+    pybo 게시판 상세 출력
+    """
+
+    board = get_object_or_404(board, pk=board_id)
+    comment_list = board.comment_set.all()
+    context = {'board': board, 'comment_list': comment_list}
+    return render(request, 'pybo/board_detail.html', context)
