@@ -6,15 +6,18 @@
 ## 프로젝트 시동
 
 
-```{python}
+```{bash}
 # initialize of venv
 python3 -m venv ./venv && source ./venv/bin/activate && pip install -r requirements.txt
 
-# execution
-source ./venv/bin/activate
+# to activate venv
+source ./venv/bin/activate 
+
+# to execute the application
 python manage.py runserver
 
-# quit
-control + c
+# to quit, press control + c
+
+# to exit venv
 deactivate
 ```
