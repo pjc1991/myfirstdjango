@@ -1,5 +1,6 @@
 from django.db import models
 
+
 # Create your models here.
 
 class Question(models.Model):
@@ -9,16 +10,18 @@ class Question(models.Model):
 
     def __str__(self):
         return self.subject
-    
+
+
 class Answer(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
-    
+
     def __str__(self):
         return self.content
-    
-class board(models.Model):
+
+
+class Board(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
     create_date = models.DateTimeField()
@@ -26,8 +29,9 @@ class board(models.Model):
     def __str__(self):
         return self.title
 
+
 class Comment(models.Model):
-    board = models.ForeignKey(board, on_delete=models.CASCADE)
+    board = models.ForeignKey(Board, on_delete=models.CASCADE)
     content = models.TextField()
     create_date = models.DateTimeField()
 

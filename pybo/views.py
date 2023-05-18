@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse
-from pybo.models import Question, board
+from pybo.models import Question, Board
 from django.utils import timezone
 from .forms import QuestionForm
 
@@ -62,8 +62,8 @@ def board_list(request):
     pybo 게시판 목록 출력
     """
 
-    board_list = board.objects.order_by('-create_date')
-    context = {'board_list': board_list}
+    board_item_list = Board.objects.order_by('-create_date')
+    context = {'board_list': board_item_list}
     return render(request, 'pybo/board_list.html', context)
 
 
@@ -72,7 +72,7 @@ def board_detail(request, board_id):
     pybo 게시판 상세 출력
     """
 
-    board = get_object_or_404(board, pk=board_id)
-    comment_list = board.comment_set.all()
-    context = {'board': board, 'comment_list': comment_list}
+    board_detail_item = get_object_or_404(Board, pk=board_id)
+    comment_list = board_detail_item.comment_set.all()
+    context = {'board': board_detail_item, 'comment_list': comment_list}
     return render(request, 'pybo/board_detail.html', context)
