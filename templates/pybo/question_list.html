@@ -2,10 +2,19 @@
 {% block content %}
 
 {% if question_list %}
-    <ul>
+    <ul class="list-group">
     {% for question in question_list %}
-        <li>
-            <a href="{% url 'pybo:detail' question.id %}">{{ question.subject }}</a>
+        <li class="list-group-item">
+            <ul class="list-group list-group-horizontal">
+                <li class="list-group-item text-primary">{{ question.id }}</li>
+                <li class="list-group-item text-secondary">{{ question.create_date }}</li>
+                <li class="list-group-item text-info">
+                    <a href="{% url 'pybo:detail' question.id %}">
+                        {{ question.subject }}
+                    </a>
+                </li>
+
+            </ul>
         </li>
     {% endfor %}
     <!-- paging -->
