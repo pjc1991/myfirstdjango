@@ -19,21 +19,3 @@ class Answer(models.Model):
 
     def __str__(self):
         return self.content
-
-
-class Board(models.Model):
-    title = models.CharField(max_length=200)
-    content = models.TextField()
-    create_date = models.DateTimeField()
-
-    def __str__(self):
-        return self.title
-
-
-class Comment(models.Model):
-    board = models.ForeignKey(Board, on_delete=models.CASCADE)
-    content = models.TextField()
-    create_date = models.DateTimeField()
-
-    def __str__(self):
-        return self.content
