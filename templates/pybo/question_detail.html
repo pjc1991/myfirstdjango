@@ -2,27 +2,57 @@
 {% block content %}
 
     {% if question %}
-        <h1>{{ question.subject }}</h1>
+        <h2 class="border-bottom py-2">{{ question.subject }}</h2>
+        <div class="card my-3">
+            <div class="card-body">
+                <p class="card-text" style="white-space: pre-line;">
+                    {{ question.content }}
+                </p>
+                <div class="d-flex justify-content-end">
+                    <div class="badge bg-light text-dark p-2 text-start">
+                        <div class="mb-2">{{ question.author.username }}</div>
+                        <div>{{ question.create_date }}</div>
+                    </div>
+                </div>
+                <div class="my-3">
+                    {% if request.user == question.author %}
+                        <a class="btn btn-primary" href="{% url 'pybo:question_modify' question.id %}">수정</a>
+                        <a class="btn btn-danger" href="{% url 'pybo:question_delete' question.id %}">삭제</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        <h5 class="border-bottom py-2'"> {{ question.answer_set.count }}개의 답변이 있습니다. </h5>
+        {% for answer in answer_list %}
+            <div class="card my-3">
+                <div class="card-body">
+                    <p class="card-text" style="white-space: pre-line;">{{ answer.content }}</p>
+                    <div class="d-flex justify-content-end">
+                        <div class="badge bg-light text-dark p-2 text-start">
+                            <div class="mb-2">{{ answer.author.username }}</div>
+                            <div>{{ answer.create_date }}</div>
+                        </div>
+                    </div>
+                    <div class="my-3">
+                    {% if request.user == question.author %}
+                        <a class="btn btn-primary" href="{% url 'pybo:answer_modify' answer.id %}">수정</a>
+                        <a class="btn btn-danger" href="{% url 'pybo:answer_delete' answer.id %}">삭제</a>
+                    {% endif %}
+                </div>
+                </div>
+            </div>
+        {% endfor %}
 
-        <div>
-            {{ question.content }}
-        </div>
-        <div>
-            <h5> {{ question.answer_set.count }}개의 답변이 있습니다. </h5>
-            <ul>
-                {% for answer in answer_list %}
-                    <li>
-                        {{ answer.author.username }} : {{ answer.content }}
-                    </li>
-                {% endfor %}
-            </ul>
-            <form action="{% url 'pybo:answer_create' question.id %}" method="post">
+        <form action="{% url 'pybo:answer_create' question.id %}" method="post">
+            <div class="form-floating">
                 {% csrf_token %}
-                <textarea class="form-control" name="content" id="content" rows="15"
+                <textarea class="form-control" name="content" id="content" rows="5"
+                          placeholder="답변을 입력해주세요."
                         {% if not user.is_authenticated %} disabled {% endif %}></textarea>
-                <input class="my-3 btn btn-primary" type="submit" value="답변 등록">
-            </form>
-        </div>
+                <label for="content">답변 작성</label>
+                <input class="btn btn-primary" type="submit" value="등록">
+            </div>
+        </form>
     {% else %}
         <p>Invalid ID</p>
     {% endif %}

@@ -17,10 +17,11 @@ from django.contrib import admin
 from django.urls import path, include
 
 import pybo
+import pybo.views.base_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('pybo/', include('pybo.urls')),
     path('common/', include('common.urls')),
-    path('', pybo.views.index, name='index'),
+    path('', pybo.views.base_views.index, name='index'),
 ]

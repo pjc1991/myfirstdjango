@@ -17,7 +17,7 @@
                 <th scope="row">{{ question.id }}</th>
                 <td>{{ question.author.username }}</td>
                 <td>
-                    <a href="{% url 'pybo:detail' question.id %}">
+                    <a href="{% url 'pybo:question_detail' question.id %}">
                         {{ question.subject }}
                     </a>
 
