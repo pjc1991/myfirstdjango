@@ -1,8 +1,11 @@
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, render, get_object_or_404
 from pybo.models import Question
 from django.utils import timezone
-from .forms import QuestionForm
+from .forms import QuestionForm, AnswerForm
 from django.core.paginator import Paginator
+
 
 # Create your views here.
 
@@ -31,6 +34,7 @@ def detail(request, question_id):
     return render(request, 'pybo/question_detail.html', context)
 
 
+@login_required(login_url='common:login')
 def question_create(request):
     """
     pybo 질문 등록
@@ -39,6 +43,7 @@ def question_create(request):
         form = QuestionForm(request.POST)
         if form.is_valid():
             question = form.save(commit=False)
+            question.author = request.user
             question.create_date = timezone.now()
             question.save()
             return redirect('pybo:index')
@@ -48,13 +53,27 @@ def question_create(request):
         return render(request, 'pybo/question_form.html', context)
 
 
+@login_required(login_url='common:login')
 def answer_create(request, question_id):
     """
     pybo 답변 등록
     """
-    
+
+    if not request.method == 'POST':
+        return HttpResponseNotAllowed('POST')
+
+    form = AnswerForm(request.POST)
+    form.user = request.user
+    form.create_date = timezone.now()
+
+    if not form.is_valid():
+        return HttpResponseNotAllowed('form is not valid')
+
     question = get_object_or_404(Question, pk=question_id)
-    question.answer_set.create(content=request.POST.get(
-        'content'), create_date=timezone.now())
+    question.answer_set.create(
+        author=request.user,
+        content=form.cleaned_data['content'],
+        create_date=timezone.now(),
+    )
 
     return redirect('pybo:detail', question_id=question_id)
