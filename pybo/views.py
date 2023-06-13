@@ -60,14 +60,14 @@ def answer_create(request, question_id):
     """
 
     if not request.method == 'POST':
-        return HttpResponseNotAllowed('POST')
+        return redirect('pybo:detail', question_id=question_id)
 
     form = AnswerForm(request.POST)
     form.user = request.user
     form.create_date = timezone.now()
 
     if not form.is_valid():
-        return HttpResponseNotAllowed('form is not valid')
+        return redirect('pybo:detail', question_id=question_id)
 
     question = get_object_or_404(Question, pk=question_id)
     question.answer_set.create(
