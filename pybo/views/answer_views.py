@@ -14,14 +14,14 @@ def answer_create(request, question_id):
     """
 
     if not request.method == 'POST':
-        return redirect('pybo:detail', question_id=question_id)
+        return redirect('pybo:question_detail', question_id=question_id)
 
     form = AnswerForm(request.POST)
     form.user = request.user
     form.create_date = timezone.now()
 
     if not form.is_valid():
-        return redirect('pybo:detail', question_id=question_id)
+        return redirect('pybo:question_detail', question_id=question_id)
 
     question = get_object_or_404(Question, pk=question_id)
     question.answer_set.create(
@@ -30,7 +30,7 @@ def answer_create(request, question_id):
         create_date=timezone.now(),
     )
 
-    return redirect('pybo:detail', question_id=question_id)
+    return redirect('pybo:question_detail', question_id=question_id)
 
 
 @login_required(login_url='common:login')
@@ -50,14 +50,14 @@ def answer_modify(request, answer_id):
     form = AnswerForm(request.POST, instance=answer)
 
     if not form.is_valid():
-        return redirect('pybo:detail', question_id=answer.question.id)
+        return redirect('pybo:question_detail', question_id=answer.question.id)
 
     answer = form.save(commit=False)
     answer.author = request.user
     answer.modify_date = timezone.now()
     answer.save()
 
-    return redirect('pybo:detail', question_id=answer.question.id)
+    return redirect('pybo:question_detail', question_id=answer.question.id)
 
 
 @login_required(login_url='common:login')
@@ -71,4 +71,4 @@ def answer_delete(request, answer_id):
         return HttpResponseNotAllowed('잘못된 접근입니다.')
 
     answer.delete()
-    return redirect('pybo:detail', question_id=answer.question.id)
+    return redirect('pybo:question_detail', question_id=answer.question.id)

@@ -55,14 +55,14 @@ def question_modify(request, question_id):
     form = QuestionForm(request.POST, instance=question)
 
     if not form.is_valid():
-        return redirect('pybo:detail', question_id=question_id)
+        return redirect('pybo:question_detail', question_id=question_id)
 
     question = form.save(commit=False)
     question.author = request.user
     question.modify_date = timezone.now()
     question.save()
 
-    return redirect('pybo:detail', question_id=question_id)
+    return redirect('pybo:question_detail', question_id=question_id)
 
 
 @login_required(login_url='common:login')
