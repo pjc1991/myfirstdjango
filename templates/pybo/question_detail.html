@@ -34,7 +34,7 @@
                         </div>
                     </div>
                     <div class="my-3">
-                    {% if request.user == question.author %}
+                    {% if request.user == answer.author %}
                         <a class="btn btn-primary" href="{% url 'pybo:answer_modify' answer.id %}">수정</a>
                         <a class="btn btn-danger" href="{% url 'pybo:answer_delete' answer.id %}">삭제</a>
                     {% endif %}
