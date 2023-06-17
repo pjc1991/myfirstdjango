@@ -8,6 +8,7 @@ class Question(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     subject = models.CharField(max_length=200)
     content = models.TextField()
+    voter = models.ManyToManyField(User, related_name='voter_question')
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
 
@@ -19,6 +20,7 @@ class Answer(models.Model):
     author = models.ForeignKey(User, on_delete=models.CASCADE)
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
     content = models.TextField()
+    voter = models.ManyToManyField(User, related_name='voter_answer')
     create_date = models.DateTimeField()
     modify_date = models.DateTimeField(null=True, blank=True)
 

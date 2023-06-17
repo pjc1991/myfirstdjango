@@ -15,6 +15,11 @@
                     </div>
                 </div>
                 <div class="my-3">
+                    <a class="recommend btn btn-sm btn-outline-secondary"
+                       data-uri="{% url 'pybo:question_vote' question.id %}"
+                       href="javascript:void(0)">추천
+                        <span class="badge bg-light text-dark p-2 text-start">{{ question.voter.count }}</span>
+                    </a>
                     {% if request.user == question.author %}
                         <a class="btn btn-primary" href="{% url 'pybo:question_modify' question.id %}">수정</a>
                         <a class="btn btn-danger" href="{% url 'pybo:question_delete' question.id %}">삭제</a>
@@ -34,11 +39,16 @@
                         </div>
                     </div>
                     <div class="my-3">
-                    {% if request.user == answer.author %}
-                        <a class="btn btn-primary" href="{% url 'pybo:answer_modify' answer.id %}">수정</a>
-                        <a class="btn btn-danger" href="{% url 'pybo:answer_delete' answer.id %}">삭제</a>
-                    {% endif %}
-                </div>
+                        <a class="recommend btn btn-sm btn-outline-secondary"
+                           data-uri="{% url 'pybo:answer_vote' answer.id %}"
+                           href="javascript:void(0)">추천
+                            <span class="badge bg-light text-dark p-2 text-start">{{ answer.voter.count }}</span>
+                        </a>
+                        {% if request.user == answer.author %}
+                            <a class="btn btn-primary" href="{% url 'pybo:answer_modify' answer.id %}">수정</a>
+                            <a class="btn btn-danger" href="{% url 'pybo:answer_delete' answer.id %}">삭제</a>
+                        {% endif %}
+                    </div>
                 </div>
             </div>
         {% endfor %}
@@ -57,4 +67,30 @@
         <p>Invalid ID</p>
     {% endif %}
     <button class="my-3 btn btn-secondary" onclick="location.href='{% url 'pybo:index' %}'">돌아가기</button>
+    <script>
+        const recommendElements = document.getElementsByClassName('recommend');
+        Array.from(recommendElements).forEach((element) => {
+            element.addEventListener('click', function () {
+                // send post request to uri
+                const uri = element.dataset.uri;
+                const request = new XMLHttpRequest();
+                request.open('POST', uri, true);
+                request.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                request.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
+                request.send();
+                request.onload = function () {
+                    if (request.status >= 200 && request.status < 400) {
+                        const data = JSON.parse(request.responseText);
+                        // vote_count, message, error
+                        if (data.error) {
+                            alert(data.message);
+                        } else {
+                            element.getElementsByClassName('badge')[0].innerText = data.vote_count;
+                        }
+                    }
+                };
+
+            })
+        });
+    </script>
 {% endblock %}

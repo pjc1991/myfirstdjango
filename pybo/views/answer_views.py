@@ -2,6 +2,8 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import redirect, get_object_or_404, render
 from django.utils import timezone
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
 
 from pybo.forms import AnswerForm
 from pybo.models import Question, Answer
@@ -72,3 +74,24 @@ def answer_delete(request, answer_id):
 
     answer.delete()
     return redirect('pybo:question_detail', question_id=answer.question.id)
+
+
+@api_view(['POST'])
+def answer_vote_api(request, answer_id):
+    """
+    pybo 답변 추천
+    """
+    answer = get_object_or_404(Answer, pk=answer_id)
+
+    if not request.user.is_authenticated:
+        return Response({'error': '로그인을 해주세요.'}, status=401)
+
+    if request.user == answer.author:
+        return Response({'error': '자신이 작성한 글은 추천할 수 없습니다.'}, status=400)
+
+    if answer.voter.filter(pk=request.user.pk).exists():
+        answer.voter.remove(request.user)
+        return Response({'vote_count': answer.voter.count(), 'message': '추천 취소'}, status=201)
+
+    answer.voter.add(request.user)
+    return Response({'vote_count': answer.voter.count(), 'message': '추천 완료'}, status=201)
