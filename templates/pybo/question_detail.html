@@ -79,15 +79,14 @@
                 request.setRequestHeader('X-CSRFToken', '{{ csrf_token }}');
                 request.send();
                 request.onload = function () {
-                    if (request.status >= 200 && request.status < 400) {
-                        const data = JSON.parse(request.responseText);
-                        // vote_count, message, error
-                        if (data.error) {
-                            alert(data.message);
-                        } else {
-                            element.getElementsByClassName('badge')[0].innerText = data.vote_count;
-                        }
+                    const data = JSON.parse(request.responseText);
+                    // vote_count, message, error
+                    if (data.error) {
+                        alert(data.error);
+                    } else {
+                        element.getElementsByClassName('badge')[0].innerText = data.vote_count;
                     }
+
                 };
 
             })
