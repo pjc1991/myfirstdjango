@@ -1,12 +1,13 @@
 {% extends 'base.html' %}
+{% load pybo_filter %}
 {% block content %}
 
     {% if question %}
         <h2 class="border-bottom py-2">{{ question.subject }}</h2>
         <div class="card my-3">
             <div class="card-body">
-                <p class="card-text" style="white-space: pre-line;">
-                    {{ question.content }}
+                <p class="card-text">
+                    {{ question.content|mark }}
                 </p>
                 <div class="d-flex justify-content-end">
                     <div class="badge bg-light text-dark p-2 text-start">
@@ -29,9 +30,10 @@
         </div>
         <h5 class="border-bottom py-2'"> {{ question.answer_set.count }}개의 답변이 있습니다. </h5>
         {% for answer in answer_list %}
+            <a id="answer_{{ answer.id }}"></a>
             <div class="card my-3">
                 <div class="card-body">
-                    <p class="card-text" style="white-space: pre-line;">{{ answer.content }}</p>
+                    <p class="card-text">{{ answer.content|mark }}</p>
                     <div class="d-flex justify-content-end">
                         <div class="badge bg-light text-dark p-2 text-start">
                             <div class="mb-2">{{ answer.author.username }}</div>

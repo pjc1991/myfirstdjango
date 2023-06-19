@@ -1,38 +1,50 @@
 {% extends 'base.html' %}
 {% block content %}
 
-{% if question_list %}
-    <table class="table table-hover">
-        <thead>
-        <tr>
-            <th scope="col">번호</th>
-            <th scope="col">글쓴이</th>
-            <th scope="col" style="width: 50%">제목</th>
-            <th scope="col">작성일시</th>
-        </tr>
-        </thead>
-        <tbody>
-        {% for question in question_list %}
+    <div class="row my-3">
+        <div class="col-6">
+            <div class="input-group mb-3">
+                <input type="text" class="form-control" placeholder="Search" aria-label="Search"
+                       id="search_keyword" aria-describedby="button-addon2"
+                       value="{{ keyword|default_if_none:'' }}">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" id="btn-search">Search</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% if question_list %}
+        <table class="table table-hover">
+            <thead>
             <tr>
-                <th scope="row">{{ question.id }}</th>
-                <td>{{ question.author.username }}</td>
-                <td>
-                    <a href="{% url 'pybo:question_detail' question.id %}">
-                        {{ question.subject }}
-                    </a>
+                <th scope="col">번호</th>
+                <th scope="col">글쓴이</th>
+                <th scope="col" style="width: 50%">제목</th>
+                <th scope="col">작성일시</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for question in question_list %}
+                <tr>
+                    <th scope="row">{{ question.id }}</th>
+                    <td>{{ question.author.username }}</td>
+                    <td>
+                        <a href="{% url 'pybo:question_detail' question.id %}">
+                            {{ question.subject }}
+                        </a>
 
-                    {% if question.answer_set.count > 0 %}
-                        <span class="text-danger small">
+                        {% if question.answer_set.count > 0 %}
+                            <span class="text-danger small">
                             [답변 {{ question.answer_set.count }}]
                         </span>
-                    {% endif %}
-                </td>
-                <td>{{ question.create_date }}</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-    <!-- paging -->
+                        {% endif %}
+                    </td>
+                    <td>{{ question.create_date }}</td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <!-- paging -->
         <ul class="pagination justify-content-center">
             {% for page in question_list.elided_page_range %}
                 {% if page == question_list.paginator.ELLIPSIS %}
@@ -47,9 +59,12 @@
             {% endfor %}
         </ul>
     {% else %}
-    <p>there is no question.</p>
-{% endif %}
+        <p>there is no question.</p>
+    {% endif %}
     <a href="{% url 'pybo:question_create' %}" class="btn btn-primary">질문 등록하기 </a>
-
+    <form id="search_form" method="get" action="{% url 'pybo:index' %}">
+        <input type="hidden" id="keyword" name="keyword" value="{{ keywor|default_if_none:'' }}">
+        <input type="hidden" id="page" name="page" value="{{ page }}">
+    </form>
 {% endblock %}
   

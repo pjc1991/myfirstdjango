@@ -1,6 +1,6 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseNotAllowed
-from django.shortcuts import redirect, get_object_or_404, render
+from django.shortcuts import redirect, get_object_or_404, render, resolve_url
 from django.utils import timezone
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -32,7 +32,7 @@ def answer_create(request, question_id):
         create_date=timezone.now(),
     )
 
-    return redirect('pybo:question_detail', question_id=question_id)
+    return redirect(get_answer_uri(question_id, question.answer_set.last().id))
 
 
 @login_required(login_url='common:login')
@@ -59,7 +59,7 @@ def answer_modify(request, answer_id):
     answer.modify_date = timezone.now()
     answer.save()
 
-    return redirect('pybo:question_detail', question_id=answer.question.id)
+    return redirect(get_answer_uri(answer.question.id, answer.id))
 
 
 @login_required(login_url='common:login')
@@ -95,3 +95,15 @@ def answer_vote_api(request, answer_id):
 
     answer.voter.add(request.user)
     return Response({'vote_count': answer.voter.count(), 'message': '추천 완료'}, status=201)
+
+
+'''
+Utility functions here
+'''
+
+
+def get_answer_uri(question_id: int, answer_id: int):
+    """
+    uri for answer_n
+    """
+    return '{}#answer_{}'.format(resolve_url('pybo:question_detail', question_id=question_id), str(answer_id))
