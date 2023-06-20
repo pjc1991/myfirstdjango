@@ -15,7 +15,7 @@ def index(request):
 
     question_list = Question.objects.order_by('-create_date')
 
-    if not page.isdigit():
+    if not page.isdecimal():
         page = 1
 
     if keyword:
