@@ -1,15 +1,13 @@
 from django.contrib.auth.decorators import login_required
+from django.db.models import Count
 from django.http import HttpResponseNotAllowed
 from django.shortcuts import get_object_or_404, render, redirect
 from django.utils import timezone
-from rest_framework import viewsets
 from rest_framework.decorators import api_view
-from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 
 from pybo.forms import QuestionForm
 from pybo.models import Question
-from pybo.serializers import QuestionSerializer
 
 
 def question_detail(request, question_id):
@@ -18,7 +16,9 @@ def question_detail(request, question_id):
     """
 
     q = get_object_or_404(Question, pk=question_id)
-    answer_list = q.answer_set.all()
+    # order by voter count
+    answer_list = q.answer_set.annotate(voter_count=Count('voter')).order_by('-voter_count'
+                                                                             , '-create_date')
     context = {'question': q, 'answer_list': answer_list}
     return render(request, 'pybo/question_detail.html', context)
 
