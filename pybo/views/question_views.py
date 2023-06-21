@@ -17,8 +17,7 @@ def question_detail(request, question_id):
 
     q = get_object_or_404(Question, pk=question_id)
     # order by voter count
-    answer_list = q.answer_set.annotate(voter_count=Count('voter')).order_by('-voter_count'
-                                                                             , '-create_date')
+    answer_list = q.answer_set.annotate(voter_count=Count('voter')).order_by('-voter_count', '-create_date')
     context = {'question': q, 'answer_list': answer_list}
     return render(request, 'pybo/question_detail.html', context)
 
